@@ -49,19 +49,20 @@ public class loginServlet extends HttpServlet {
             String password=request.getParameter("password");
             userdao dao=new userdao(connectionprovider.getconnection());
             user u=dao.getUserEmail(username, password);
-            String message;
-            Map<String, String> messages = new HashMap<String, String>();
-            request.setAttribute("messages", messages);
+            String m;
             if(u==null)
             {
-                messages.put("error","Invalid credentials");
+                m="Invalid Credetentials";
+                HttpSession usersession=request.getSession();
+                usersession.setAttribute("msg", m);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
             else
             {
-                messages.put("error","");
+                m="";
                 HttpSession usersession=request.getSession();
                 usersession.setAttribute("currentuser", u);
+                usersession.setAttribute("msg", m);
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         }

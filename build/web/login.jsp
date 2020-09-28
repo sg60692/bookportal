@@ -1,6 +1,7 @@
 <%@page import="com.entities.user"%>
 <%
-    if(session.getAttribute("currentuser")!=null)
+    user U=(user)session.getAttribute("currentuser");
+    if(U!=null)
     {
         response.sendRedirect("dashboard.jsp");
     }
@@ -34,8 +35,7 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
 </head>
-<body>
-	<%@include file="navbar.jsp"%>
+    <body>
 	<div class="limiter">
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
@@ -58,9 +58,20 @@
 					
 					<div class="text-right p-t-8 p-b-31">
 					</div>
+                                        <%
+                                                    String c="green";
+                                                    if((session.getAttribute("msg")!=null)&&(session.getAttribute("msg")=="Invalid Credetentials"))
+                                                        c="red";
+                                                %>
                                         <div class="container text-center">
-                                            <span id="error-message" style="color:red;">
-                                                ${messages.error}
+                                            <span id="error-message" style="color:<%out.print(c); %>;">
+                                                <%
+                                                    if(session.getAttribute("msg")!=null)
+                                                    {
+                                                        out.print(session.getAttribute("msg"));
+                                                        session.removeAttribute("msg");
+                                                    }      
+                                                %>
                                                 <br><br>
                                             </span>
                                         </div>
@@ -83,9 +94,6 @@
 		</div>
 	</div>
 	
-
-	<div id="dropDownSelect1"></div>
-	
 <!--===============================================================================================-->
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
@@ -102,5 +110,5 @@
 	<script src="vendor/countdowntime/countdowntime.js"></script>
 <!--===============================================================================================-->
 	<script src="js/main.js"></script>
-</body>
+    </body>
 </html>

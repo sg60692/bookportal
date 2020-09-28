@@ -128,7 +128,7 @@
                         if(reply=='2')
                         swal("Phone number is invalid")
                         if(reply=='3')
-                        swal("Try using another user name or the given details already exists")
+                        swal("Try using another user name as the given details already exists")
                         $("#sub-but").show();
                         if(reply=='4')
                         swal("Registered Successfully....redirecting to login page").then((value)=>{

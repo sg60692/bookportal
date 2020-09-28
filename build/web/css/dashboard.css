@@ -25,6 +25,12 @@ body {
   background: #063146;
   user-select: none;
 }
+.abook{
+    color:black;
+}
+.abook:hover{
+    text-decoration: none;
+}
 .sidebar ul a{
   display: block;
   height: 100%;
@@ -37,6 +43,9 @@ body {
   border-bottom: 1px solid black;
   border-top: 1px solid rgba(255,255,255,.1);
   transition: .4s;
+}
+.bookdisplay:hover{
+    height:220px;
 }
 ul li:hover a{
   padding-left: 50px;

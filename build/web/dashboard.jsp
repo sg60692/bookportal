@@ -2,8 +2,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
-    if (session.getAttribute("currentuser") == null) {
-
+    user U=(user)session.getAttribute("currentuser");
+    if(U==null)
+    {
+        response.sendRedirect("login.jsp");
     }
 %>
 <html lang="en" dir="ltr">
@@ -35,7 +37,6 @@
         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     </head>
-    <% int x = 0; %>
     <body style="background-image: url('images/bg-01.jpg');">
         <input type="checkbox" id="check">
         <label for="check">
@@ -45,12 +46,13 @@
         <div class="sidebar">
             <h1 class="mt-0 hdashboard"><a href="index.jsp" style="color:white;font-size:25px;margin-left:40px; ">Home</a></h1>
             <ul>
-                <li><a href="#"><i class="fas fa-calendar-week" style="margin-right: 8px;"></i>Upload books</a></li>
-                <li><a href="logout.java">Log Out</span></a></li>
+                <li onclick="v()"><a href="#"><i class="fas fa-calendar-week" style="margin-right: 8px;"></i>Your books</a></li>
+                <li onclick="u()"><a href="#"><i class="fas fa-calendar-week" style="margin-right: 8px;"></i>Upload books</a></li>
+                <li><a href="logout">Log Out</span></a></li>
             </ul>  
         </div>
-        <section>
-            <div style="margin-top:0%;opacity:0.9;position:absolute;right:0;height:70px;width:100%;">
+        <section style="position:absolute;width:100%;">
+            <div style="margin-top:5px;margin-bottom:15px;opacity:0.9;right:0;height:70px;width:100%;">
                 <div class="text-white" style="background-color:#79bfe8; height:100%;padding-top:5px;">
                     <div class="text-right">
                         <h3 style="margin-bottom:0;margin-right:10px;">
@@ -67,9 +69,43 @@
                     </div>
                 </div>
             </div>
-            <br><br><br>
-            <div class="limiter" id="display">
-                
+            <div class="limiter" id="display" style="margin-top:5px;">
+                <div class="container-login100" id="uploadform">
+                    <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+                        <form id="up-form" action="uploadServlet" method="post" class="login100-form validate-form">
+                            <span class="login100-form-title p-b-49">
+                                Upload Book
+                            </span>
+
+                            <div class="wrap-input100 validate-input m-b-23" data-validate = "Bookname is reauired">
+                                <span class="label-input100" style="font-weight:bold;">Book name</span>
+                                <input class="input100" type="text" name="bookname" placeholder="Type book name">
+                            </div>
+
+                            <div class="wrap-input100 validate-input m-b-23" data-validate="Author is required">
+                                <span class="label-input100" style="font-weight:bold;">Author</span>
+                                <input class="input100" type="text" name="author" placeholder="Type author">
+                            </div>
+                            <div class="wrap-input100 validate-input" data-validate="Link is required">
+                                <span class="label-input100" style="font-weight:bold;">Link</span>
+                                <input class="input100" type="text" name="link" placeholder="Please provide Link">
+                            </div>
+
+                            <div class="text-right p-t-8 p-b-31">
+                            </div>
+                            <div class="container-login100-form-btn">
+                                <div class="wrap-login100-form-btn">
+                                    <div class="login100-form-bgbtn"></div>
+                                    <button id="sub-but" class="login100-form-btn">
+                                        upload
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="userbooks">
+                </div>
             </div>
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <!--===============================================================================================-->
@@ -89,8 +125,45 @@
             <!--===============================================================================================-->
             <script src="js/main.js"></script>
             <script>
+                function u()
+                {
+                    $("#uploadform").show();
+                    $("#userbooks").hide();
+                }
+                function v()
+                {
+                    $("#uploadform").hide();
+                    $.ajax({
+                       url: "userbook.jsp",
+                       success: function (data, textStatus, jqXHR) 
+                       {
+                           $("#userbooks").html(data);
+                       }
+                    });
+                    $("#userbooks").show();
+                }
+                function rem(bookname)
+                {
+                    $.ajax({
+                            url: "RemoveServlet",
+                            data: {name:bookname},
+                            success: function (data)
+                            {
+                                var reply = data.replace(/\s+/, "");
+                                if (reply == '1')
+                                    swal("Book removed successfully")
+                                if(reply=='0')
+                                    swal("Oops..Some error has occured")
+                            },
+                            error: function ()
+                            {
+                                swal("Oops..Some error has occured");
+                            }
+                    });
+                    v();
+                }
                 $(document).ready(function () {
-                    
+                    v();
                     $('#up-form').on('submit', function (event) {
                         event.preventDefault();
                         $("#sub-but").hide();
@@ -101,7 +174,6 @@
                             data: form,
                             success: function (data, textStatus, jqXHR)
                             {
-                                console.log(data)
                                 $("#sub-but").show();
                                 var reply = data.replace(/\s+/, "");
                                 if (reply == '1')
